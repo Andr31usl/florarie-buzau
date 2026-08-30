@@ -1164,7 +1164,18 @@ section[id]{scroll-margin-top:calc(var(--header-h) + 10px)}
   window.addEventListener('scroll', function () {
     if (ticking) return;
     ticking = true;
-    window.requestAnimationFrame(function () { onScroll(); ticking = false; });
+    var rulat = false;
+    function ruleaza() {
+      if (rulat) return;
+      rulat = true;
+      ticking = false;
+      onScroll();
+    }
+    window.requestAnimationFrame(ruleaza);
+    /* plasa de siguranta: in browserele in-app si in economie de baterie
+       requestAnimationFrame poate sa nu ruleze deloc, iar fara asta
+       handler-ul de scroll ar ramane blocat definitiv */
+    setTimeout(ruleaza, 250);
   }, { passive: true });
   onScroll();
 
